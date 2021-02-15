@@ -1,8 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 import datetime as dt
 from pandas_datareader import data as pdr
+from EF_Plot import EF_plot
+from CalculateResults import calculatedResults
 
 
 def getData(stocks, start, end):
@@ -16,28 +15,21 @@ def getData(stocks, start, end):
     return meanReturns, covMatrix
 
 
-def portfolioPerformance(weights, meanReturns, covMatrix):
-    returns = np.sum(meanReturns * weights) * 252
-    stdDev = np.sqrt(np.dot(weights.T, np.dot(
-        covMatrix, weights))) * np.sqrt(252)
-
-    return returns, stdDev
-
-
-def main():
+if __name__ == '__main__':
     stocks = ['AAPL', 'ABBV', 'CSCO', 'O', 'T', 'VZ', 'XOM']
 
     endDate = dt.datetime.now()
-    startDate = endDate - dt.timedelta(days=365)
-
-    weights = np.array(
-        [0.0782, 0.1020, 0.0828, 0.1149, 0.2270, 0.1877, 0.2075])
+    startDate = endDate - dt.timedelta(days=365 * 10)
 
     meanReturns, covMatrix = getData(stocks, startDate, endDate)
-    returns, stdDev = portfolioPerformance(weights, meanReturns, covMatrix)
+    maxSR_returns, maxSR_stdDev, maxSR_allocation, minVol_returns, minVol_stdDev, minVol_allocation, effList, targetReturns = calculatedResults(
+        meanReturns, covMatrix)
 
-    print(round(returns * 100, 2), round(stdDev * 100, 2))
+    print("Maximizing Sharpe Ratio Portfolio\n")
+    print("Max Returns: ", maxSR_returns, " Max Standard Deviation: ",
+          maxSR_stdDev, '\n', "Stock Allocation Recommendation\n",  maxSR_allocation)
+    print("\nMinimum Volitility Portfolio\n")
+    print("Max Returns: ", minVol_returns, " Max Standard Deviation: ",
+          minVol_stdDev, '\n', "Stock Allocation Recommendation\n",  minVol_allocation)
 
-
-if __name__ == '__main__':
-    main()
+    EF_plot(meanReturns, covMatrix)
