@@ -1,4 +1,4 @@
-# Stock Portfolio Optimization
+# Stock Portfolio Efficient Frontier Model
 
 <p align="left">
     <a href="https://www.python.org/">
